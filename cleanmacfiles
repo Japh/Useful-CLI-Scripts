@@ -1,0 +1,3 @@
+#!/bin/bash
+rm -f `find ./ | grep "\.\_.*"`
+rm -f `find ./ | grep "\.DS\_.*"`
