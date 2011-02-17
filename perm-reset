@@ -1,0 +1,2 @@
+#!/bin/bash
+chmod 0755 $(find ./ -type d | grep -v .svn | grep -v .git) && chmod 0644 $(find ./ -type f | grep -v .svn | grep -v .git)
