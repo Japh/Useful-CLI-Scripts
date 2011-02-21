@@ -1,7 +1,10 @@
 #!/bin/bash
 
+HELP_STRING="Usage: check-diff remote_username@remote_hostname remote_dir local_dir"
+
 if [ $1 = '--help' ]; then
-	echo "Usage: check-diff remote_username@remote_hostname remote_dir local_dir"
+	echo $HELP_STRING
 else
 	rsync -v --ignore-existing -n -r --exclude=".svn" --exclude="tmp" $1:$2 $3
 fi
+
