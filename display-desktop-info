@@ -1,0 +1,49 @@
+#!/bin/bash
+
+# Show current uptime
+uptime | awk '{print "UPTIME : " $3 " " $4 " " $5 " " }'; top -l 1 | awk '/PhysMem/ {print "RAM : " $8 " "}' ; top -l 2 | awk '/CPU usage/ &amp;&amp; NR &gt; 5 {print $6, $7=":", $8, $9="user ", $10, $11="sys ", $12, $13}'
+hdd_total=`df -h | grep "disk0s2" | awk '{print $2}'`
+hdd_free=`df -h | grep "disk0s2" | awk '{print $4}'`
+echo "HDD : $hdd_free / $hdd_total"
+echo ''
+
+# Show current processes
+#top -ocpu -F -R -l2 -n20 | grep '^....[1234567890] ' | grep -v ' 0.0% ..:' | cut -c 1-24,33-42,64-77
+#echo ''
+
+# Show current wifi
+myvar1=`system_profiler SPAirPortDataType | grep -e "Current Wireless Network:" | awk '{print $4}'`
+myvar2=`system_profiler SPAirPortDataType | grep -e "Wireless Channel:" | awk '{print $3}'`
+echo "Wifi : $myvar1 - $myvar2"
+
+# Show current IP
+myen0=`ifconfig en0 | grep "inet " | grep -v 127.0.0.1 | awk '{print $2}'`
+
+if [ "$myen0" != "" ]
+then
+    echo "Ethernet : $myen0"
+else
+    echo "Ethernet : INACTIVE"
+fi
+
+myen1=`ifconfig en1 | grep "inet " | grep -v 127.0.0.1 | awk '{print $2}'`
+
+if [ "myen1" != "" ]
+then
+    echo "AirPort  : $myen1"
+else
+    echo "Airport  : INACTIVE"
+fi
+
+# Show external IP
+echo "External :" `curl --silent http://checkip.dyndns.org | awk '{print $6}' | cut -f 1 -d "<"`
+echo ''
+
+# Show basic system profile information
+system_profiler SPHardwareDataType SPSoftwareDataType | perl -e '@info= <>; $info= join("", @info);if($info=~m@[\r\n]+\s*Computer Name:\s*([^\r\n]+)[\r\n]+@) {print "$1\n";}if($info=~m@[\r\n]+\s*System Version:\s*([^\r\n]+)[\r\n]+@) {print "$1\n";}if($info=~m@[\r\n]+\s*Memory:\s*([^\r\n]+)[\r\n]+@) {print "$1\n";}if($info=~m@[\r\n]+\s*Total Number Of Cores:\s*([^\r\n]+)[\r\n]+@) {print "$1 x ";}if($info=~m@[\r\n]+\s*Processor Speed:\s*([^\r\n]+)[\r\n]+@) {print "$1 ";}if($info=~m@[\r\n]+\s*Processor Name:\s*([^\r\n]+)[\r\n]+@) {print "$1\n";}'
+echo ''
+
+# Show load uptime info
+uptime
+echo ''
+
